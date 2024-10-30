@@ -1,19 +1,22 @@
 package com.example.appsorteio
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class SorteioViewModel : ViewModel() {
 
     private val repository = SorteioRepository()
 
-    private val _numeroSorteado = MutableSharedFlow<Int>()
-    val numeroSorteado: SharedFlow<Int> = _numeroSorteado.asSharedFlow()
+    private val _uiState = MutableStateFlow("-")
+    val uiState: StateFlow<String> = _uiState.asStateFlow()
 
-    suspend fun sortearNumero() {
+    fun sortearNumero() {
         val numero = repository.sortearNumero()
-        _numeroSorteado.emit(numero)
+        _uiState.update {
+            numero.toString()
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.example.appsorteio
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.appsorteio.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
@@ -19,8 +21,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lifecycleScope.launch {
-            viewModel.numeroSorteado.collect { numero ->
-                exibeNumero(numero)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { novoNumero ->
+                    binding.label.text = novoNumero
+                }
             }
         }
 
@@ -29,9 +33,5 @@ class MainActivity : AppCompatActivity() {
                 viewModel.sortearNumero()
             }
         }
-    }
-
-    private fun exibeNumero(numero: Int) {
-        binding.label.text = numero.toString()
     }
 }
